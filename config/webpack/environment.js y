@@ -1,0 +1,11 @@
+const { environment } = require('@rails/webpacker')
+
+// ここでnodeの設定を追加
+environment.config.set('node', {
+  __dirname: true,
+  __filename: true,
+  global: true,
+})
+
+module.exports = environment
+
