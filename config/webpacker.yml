@@ -1,4 +1,4 @@
-# Note: You must restart bin/webpack-dev-server for changes to take effect
+# config/webpacker.yml
 
 default: &default
   source_path: app/javascript
@@ -7,90 +7,40 @@ default: &default
   public_output_path: packs
   cache_path: tmp/cache/webpacker
   check_yarn_integrity: false
-  webpack_compile_output: true
+  compile: true # 開発環境で自動コンパイルを有効にする
 
-  # Additional paths webpack should lookup modules
-  # ['app/assets', 'engine/foo/app/assets']
-  resolved_paths: []
-
-  # Reload manifest.json on all requests so we reload latest compiled packs
-  cache_manifest: false
-
-  # Extract and emit a css file
+  # 静的ファイルの出力オプション
   extract_css: false
 
-  static_assets_extensions:
-    - .jpg
-    - .jpeg
-    - .png
-    - .gif
-    - .tiff
-    - .ico
-    - .svg
-    - .eot
-    - .otf
-    - .ttf
-    - .woff
-    - .woff2
+  # 開発・テスト・本番環境でのアセットのホストを指定できます
+  # Example: https://assets.example.com
+  # asset_host: 
 
-  extensions:
-    - .mjs
-    - .js
-    - .sass
-    - .scss
-    - .css
-    - .module.sass
-    - .module.scss
-    - .module.css
-    - .png
-    - .svg
-    - .gif
-    - .jpeg
-    - .jpg
-
-development:
-  <<: *default
-  compile: true
-
-  # Verifies that correct packages and versions are installed by inspecting package.json, yarn.lock, and node_modules
-  check_yarn_integrity: true
-
-  # Reference: https://webpack.js.org/configuration/dev-server/
+  # 開発とテスト環境用の webpack-dev-server の設定
+  # 開発環境でのファイル変更を監視し、ホットリロードを行います
   dev_server:
     https: false
     host: localhost
     port: 3035
     public: localhost:3035
     hmr: false
-    # Inline should be set to true if using HMR
-    inline: true
-    overlay: true
-    compress: true
-    disable_host_check: true
-    use_local_ip: false
+    # 開発サーバーを自動で再起動する設定
+    reload_manifest: true
     quiet: false
-    pretty: false
-    headers:
-      'Access-Control-Allow-Origin': '*'
-    watch_options:
-      ignored: '**/node_modules/**'
+    compress: true
 
+development:
+  <<: *default
+  compile: true # 開発環境では自動コンパイルを有効化
 
 test:
   <<: *default
-  compile: true
-
-  # Compile test packs to a separate directory
-  public_output_path: packs-test
+  compile: true # テスト環境でも自動コンパイルを有効化
+  # CSS抽出を無効にする（必要に応じて設定）
+  extract_css: false
 
 production:
   <<: *default
-
-  # Production depends on precompilation of packs prior to booting for performance.
-  compile: false
-
-  # Extract and emit a css file
-  extract_css: true
-
-  # Cache manifest.json for performance
-  cache_manifest: true
+  compile: false # 本番環境では事前コンパイルを推奨
+  extract_css: true # CSSを抽出して独立したファイルとして出力
+  cache_manifest: true # manifest.jsonをキャッシュしてパフォーマンス向上
